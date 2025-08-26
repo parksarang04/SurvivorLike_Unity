@@ -1,4 +1,7 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
@@ -18,13 +21,16 @@ public class Player : MonoBehaviour
     void Update()
     {
         //Input.GetAxis() = 어떤 축에 대한 입력값을 숫자로 반환, 입력 값이 부드럽게 바뀐다 = player 이동 시 미끄러짐 / GetAxisRaw = 명확한 컨트롤 구현 가능
-        inputVec.x = Input.GetAxisRaw("Horizontal");
-        inputVec.y = Input.GetAxisRaw("Vertical");
+        //inputVec.x = Input.GetAxisRaw("Horizontal");
+        //inputVec.y = Input.GetAxisRaw("Vertical");
+
+        //Input System 패키지설치로 player 이동 코드 불필요. 대신 void OnMove() 사용
     }
 
     void FixedUpdate()
     {
-        Vector2 nextVec = inputVec.normalized * speed * Time.fixedDeltaTime;  // normalized = 벡터 값의 크기가 1이 되도록 좌표가 수정 / fixedDeltaTime = 물리 프레임 하나가 소비한 시간
+                            //OnMove()에서 normalized 사용하기에 빼줘도된다.
+        Vector2 nextVec = inputVec/*.normalized*/* speed * Time.fixedDeltaTime;  // normalized = 벡터 값의 크기가 1이 되도록 좌표가 수정 / fixedDeltaTime = 물리 프레임 하나가 소비한 시간
         // 1. 힘을 준다
         //rigid.AddForce(inputVec);
 
@@ -33,5 +39,10 @@ public class Player : MonoBehaviour
 
         // 3. 위치 이동
         rigid.MovePosition(rigid.position + nextVec);   // 위치를 옮긴다 = MovePosition = 위치 이동이라 현재 위치도 더해주어야한다.
+    }
+
+    void OnMove(InputValue value)
+    {
+        inputVec = value.Get<Vector2>();
     }
 }
