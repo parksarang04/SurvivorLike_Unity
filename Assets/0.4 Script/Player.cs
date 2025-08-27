@@ -7,7 +7,10 @@ public class Player : MonoBehaviour
 {
     public Vector2 inputVec;
     public float speed;
-    Rigidbody2D rigid;   
+    Animator  anim;
+
+    Rigidbody2D rigid;
+    SpriteRenderer spriter;
 
     void Start()
     {
@@ -17,6 +20,8 @@ public class Player : MonoBehaviour
     void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
+        spriter = GetComponent<SpriteRenderer>();
+        anim = GetComponent<Animator>();
     }
     void Update()
     {
@@ -44,5 +49,15 @@ public class Player : MonoBehaviour
     void OnMove(InputValue value)
     {
         inputVec = value.Get<Vector2>();
+    }
+
+    void LateUpdate()
+    {
+        anim.SetFloat("Speed", inputVec.magnitude);
+
+        if (inputVec.x != 0)
+        {
+            spriter.flipX = inputVec.x < 0; //spriter.flipX = inputVec.x < true 는 무조건 뒤집어서 고정이기에 입력 방향대로 뒤집어지는 연산식을 넣음.
+        }
     }
 }
