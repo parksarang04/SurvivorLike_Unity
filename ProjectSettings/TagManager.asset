@@ -7,6 +7,8 @@ TagManager:
   - Ground
   - Area
   - Eneny
+  - Bullet
+  - Billet
   layers:
   - Default
   - TransparentFX
