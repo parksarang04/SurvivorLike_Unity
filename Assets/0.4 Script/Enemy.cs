@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class Enemy : MonoBehaviour
 {
     public float speed;
@@ -29,11 +28,14 @@ public class Enemy : MonoBehaviour
         if (!isLive)
             return;
 
-        // 위치 차이 = 타겟 위치 - 나의 위치
-        Vector2 dirVec = target.position - rigid.position;  
+        Vector2 dirVec = target.position - rigid.position;
         Vector2 nextVec = dirVec.normalized * speed * Time.deltaTime;
-        rigid.MovePosition(rigid.position + nextVec);   //플레이어의 키입력 값을 더한 이동 = 몬스터의 방향 값을 더한 이동
-        rigid.linearVelocity  = Vector2.zero;
+        rigid.MovePosition(rigid.position + nextVec);
+#if UNITY_6000_0_OR_NEWER
+        rigid.linearVelocity = Vector2.zero;
+#else
+        rigid.velocity = Vector2.zero;
+#endif
     }
 
     void LateUpdate()
@@ -46,7 +48,7 @@ public class Enemy : MonoBehaviour
 
     void OnEnable()
     {
-        target = GameManager.instance.player.GetComponent<Rigidbody2D>();   
+        target = GameManager.instance.player.GetComponent<Rigidbody2D>();
         isLive = true;
         health = maxHealth;
     }
@@ -59,27 +61,26 @@ public class Enemy : MonoBehaviour
         health = data.health;
     }
 
-    void OnTriggerEnter2D(Collider2D collision)
+    // ★ 수정: Bullet 태그 검사 제거, 대신 TakeDamage 함수로 처리
+    public void TakeDamage(float damage)
     {
-        if (!collision.CompareTag("Bullet"))
-            return;
+        if (!isLive) return;
 
-        health -= collision.GetComponent<Bullet>().damage;
+        health -= damage;
 
         if (health > 0)
-        // .. Live, Hit Action
         {
-
+            // 피격 애니메이션, 이펙트 등 추가 가능
         }
         else
         {
-            //.. Die
             Dead();
         }
     }
 
     void Dead()
     {
+        isLive = false;
         gameObject.SetActive(false);
     }
 }
