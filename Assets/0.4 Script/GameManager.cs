@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
     public float gameTime;
     public float maxGameTime = 2 * 10f;
     [Header("# Player Info")]
+    public int health;
+    public int maxHealth = 100;
     public int level;
     public int kill;
     public int exp;
@@ -20,6 +22,11 @@ public class GameManager : MonoBehaviour
     void Awake()
     {
         instance = this;                   //인스턴스 변수를 자기자신 this로 초기화
+    }
+
+    void Start()
+    {
+        health = maxHealth; //시작할 때 현재 체력과 최대 체력이 같도록 로직 추가    
     }
 
     void Update()
